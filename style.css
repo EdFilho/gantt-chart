@@ -21,6 +21,10 @@ a {
   color: inherit;
 }
 
+.row {
+  display: flex;
+}
+
 body {
   background: var(--body);
   font-size: 16px;
@@ -29,23 +33,62 @@ body {
 }
 
 .chart-wrapper {
-  max-width: 1150px;
+  max-width: 100vw;
   padding: 0 10px;
   margin: 0 auto;
 }
 
+.step-row {
+  display: flex;
+}
+
+.step-col {
+  flex: 1;
+  padding: 0 10px;
+}
 /* CHART-VALUES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .chart-wrapper .chart-values {
   position: relative;
   display: flex;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
   font-weight: bold;
   font-size: 1.2rem;
+  height: 42px;
+  text-align: center;
+  background-color: lightgray;
+}
+
+.step-title {
+  display: flex;
+  height: 42px;
+  align-self: center;
+  padding-bottom: 20px;
+  flex-wrap: wrap;
+  text-align: center;
+  padding: 0 48px;
+  align-content: center;
+  font-size: 1.3rem;
+  background-color: lightgray;
+  border-right: solid 0.5px;
+}
+
+.step-label {
+  font-size: 1.1rem;
+  align-self: center;
+  padding-bottom: 20px;
+  flex-wrap: wrap;
+  text-align: center;
+  padding: 20px 8px 20px 8px;
+  align-content: center;
+  font-size: 1.1rem;
+  width: 164px;
+  border-right: solid 0.5px;
 }
 
 .chart-wrapper .chart-values li {
   flex: 1;
+  align-self: center;
   min-width: 80px;
   text-align: center;
 }
@@ -67,9 +110,10 @@ body {
 .chart-wrapper .chart-bars li {
   position: relative;
   color: var(--white);
-  margin-bottom: 15px;
+  padding-bottom: 15px;
   font-size: 16px;
-  border-radius: 20px;
+  border-radius: 8px;
+  min-height: 36px;
   padding: 10px 20px;
   width: 0;
   opacity: 0;

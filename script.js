@@ -1,34 +1,36 @@
 var exampleTasks = [
   {
-    etapa: '',
+    etapa: 'Projeto',
     start: new Date(2023, 10, 1),
     end: new Date(2023, 10, 5),
     color: '#3498db',
   },
   {
-    etapa: '',
+    etapa: 'Vistoria',
     start: new Date(2023, 10, 8),
     end: new Date(2023, 10, 15),
     color: '#FFC700',
   },
   {
-    etapa: '',
+    etapa: 'Implementação',
     start: new Date(2023, 10, 16),
     end: new Date(2023, 10, 22),
     color: '#53AF33',
   },
   {
-    etapa: '',
-    start: new Date(2023, 10, 23),
-    end: new Date(2023, 10, 27),
+    etapa: 'Finalização',
+    start: new Date(2023, 11, 23),
+    end: new Date(2023, 11, 27),
     color: '#FF6600',
   },
 ];
 
 function createChart(e) {
   const daysOfCurrentMonth = getDaysInCurrentMonth();
+  const daysInNextMonth = getDaysInNextMonth();
 
   populateChartValues(daysOfCurrentMonth);
+  populateChartValues(daysInNextMonth);
   populateChartBars(exampleTasks);
 
   const days = document.querySelectorAll('.chart-values li');
@@ -94,18 +96,24 @@ function populateChartBars(tasks) {
   chartBars.innerHTML = '';
 
   tasks.forEach((task) => {
+    const container = document.createElement('div');
     const li = document.createElement('li');
-    li.textContent = task.etapa;
+    const stepLabel = document.createElement('h1');
+    // li.textContent = task.etapa;
+    stepLabel.textContent = task.etapa;
 
     const startDate = task.start.getDate();
     const endDate = task.end.getDate();
     const duration = `${startDate}-${endDate}`;
 
     li.setAttribute('data-duration', duration);
-
+    stepLabel.classList.add('step-label');
+    container.classList.add('row');
     li.setAttribute('data-color', task.color);
 
-    chartBars.appendChild(li);
+    container.appendChild(stepLabel);
+    container.appendChild(li);
+    chartBars.appendChild(container);
   });
 }
 
@@ -116,6 +124,29 @@ function getDaysInCurrentMonth() {
 
   const lastDayOfPreviousMonth = new Date(year, month - 1, 0);
   const lastDay = lastDayOfPreviousMonth.getDate();
+
+  const daysInMonth = [];
+  for (let day = 1; day <= lastDay; day++) {
+    daysInMonth.push(day);
+  }
+
+  return daysInMonth;
+}
+
+function getDaysInNextMonth() {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const nextMonth = currentMonth + 1;
+
+  // Verifica se o próximo mês ultrapassa o ano atual
+  if (nextMonth > 11) {
+    year++;
+    nextMonth = 0;
+  }
+
+  const lastDayOfNextMonth = new Date(year, nextMonth + 1, 0);
+  const lastDay = lastDayOfNextMonth.getDate();
 
   const daysInMonth = [];
   for (let day = 1; day <= lastDay; day++) {
