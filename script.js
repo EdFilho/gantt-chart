@@ -1,8 +1,8 @@
 var exampleTasks = [
   {
     etapa: 'Projeto',
-    start: new Date(2023, 10, 1),
-    end: new Date(2023, 10, 5),
+    start: new Date(2023, 9, 1),
+    end: new Date(2023, 9, 5),
     color: '#3498db',
   },
   {
@@ -25,19 +25,21 @@ var exampleTasks = [
   },
 ];
 
-function createChart(e) {
-  const daysOfCurrentMonth = getDaysInCurrentMonth();
-  const daysInNextMonth = getDaysInNextMonth();
+function createChart() {
+  const uniqueMonths = getUniqueMonths(exampleTasks);
 
-  populateChartValues(daysOfCurrentMonth);
-  populateChartValues(daysInNextMonth);
-  populateChartBars(exampleTasks);
+  uniqueMonths.forEach((month) => {
+    const daysOfCurrentMonth = getDaysInMonth(month.year, month.month);
+    populateChartValues(daysOfCurrentMonth);
+    populateChartBars(getTasksForMonth(month.year, month.month));
+  });
 
   const days = document.querySelectorAll('.chart-values li');
   const tasks = document.querySelectorAll('.chart-bars li');
   const daysArray = [...days];
 
   tasks.forEach((el) => {
+    contador++;
     const duration = el.dataset.duration.split('-');
     const startDay = duration[0];
     const endDay = duration[1];
@@ -69,14 +71,20 @@ function createChart(e) {
       width = filteredArray[0].offsetLeft + filteredArray[0].offsetWidth - left;
     }
 
-    // apply css
     el.style.left = `${left}px`;
     el.style.width = `${width}px`;
-    if (e.type == 'load') {
-      el.style.backgroundColor = el.dataset.color;
-      el.style.opacity = 1;
-    }
+    el.style.backgroundColor = el.dataset.color;
+    el.style.opacity = 1;
   });
+  var altura = $('.chart-wrapper').height();
+  console.log(contador);
+  console.log(altura);
+  altura = altura + 15;
+  $('head').append(
+    '<style>.chart-wrapper .chart-values li:before{height:' +
+      altura +
+      'px !important;}</style>'
+  );
 }
 
 function populateChartValues(dates) {
@@ -86,7 +94,7 @@ function populateChartValues(dates) {
 
   dates.forEach((date) => {
     const li = document.createElement('li');
-    li.textContent = date;
+    li.innerHTML = '<br>' + date;
     ul.appendChild(li);
   });
 }
@@ -99,7 +107,7 @@ function populateChartBars(tasks) {
     const container = document.createElement('div');
     const li = document.createElement('li');
     const stepLabel = document.createElement('h1');
-    // li.textContent = task.etapa;
+    li.textContent = task.etapa;
     stepLabel.textContent = task.etapa;
 
     const startDate = task.start.getDate();
@@ -156,4 +164,51 @@ function getDaysInNextMonth() {
   return daysInMonth;
 }
 
-window.addEventListener('load', createChart);
+function getUniqueMonths(tasks) {
+  const uniqueMonths = new Set();
+  tasks.forEach((task) => {
+    const startMonth = task.start.getMonth();
+    const startYear = task.start.getFullYear();
+    const endMonth = task.end.getMonth();
+    const endYear = task.end.getFullYear();
+
+    uniqueMonths.add({ month: startMonth, year: startYear });
+    uniqueMonths.add({ month: endMonth, year: endYear });
+  });
+  return Array.from(uniqueMonths);
+}
+
+function getUniqueMonths(tasks) {
+  const uniqueMonths = new Set();
+  tasks.forEach((task) => {
+    const startMonth = task.start.getMonth();
+    const startYear = task.start.getFullYear();
+    const endMonth = task.end.getMonth();
+    const endYear = task.end.getFullYear();
+
+    uniqueMonths.add({ month: startMonth, year: startYear });
+    uniqueMonths.add({ month: endMonth, year: endYear });
+  });
+  return Array.from(uniqueMonths);
+}
+
+function getTasksForMonth(year, month) {
+  return exampleTasks.filter((task) => {
+    const startMonth = task.start.getMonth();
+    const startYear = task.start.getFullYear();
+    const endMonth = task.end.getMonth();
+    const endYear = task.end.getFullYear();
+
+    return (
+      (startYear === year && startMonth === month) ||
+      (endYear === year && endMonth === month)
+    );
+  });
+}
+
+function getDaysInMonth(year, month) {
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  return Array.from({ length: lastDay }, (_, i) => i + 1);
+}
+
+window.addEventListener('load', createChart());
